@@ -35,6 +35,47 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
+        // Redirigir después del login según el rol
+        Fortify::authenticateUsing(function (Request $request) {
+            // Esta función se ejecuta durante la autenticación
+        });
+
+        // Redirigir después del login exitoso
+        Fortify::loginView(function () {
+            return view('auth.login');
+        });
+
+        // Redirigir después del registro exitoso
+        Fortify::registerView(function () {
+            return view('auth.register');
+        });
+
+        // Configurar redirección después del login
+        $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, function () {
+            return new class implements \Laravel\Fortify\Contracts\LoginResponse {
+                public function toResponse($request) {
+                    // Redirigir según el rol del usuario
+                    if (auth()->user()->isAdmin()) {
+                        return redirect()->route('admin.panel');
+                    }
+                    return redirect()->route('dashboard');
+                }
+            };
+        });
+
+        // Configurar redirección después del registro
+        $this->app->singleton(\Laravel\Fortify\Contracts\RegisterResponse::class, function () {
+            return new class implements \Laravel\Fortify\Contracts\RegisterResponse {
+                public function toResponse($request) {
+                    // Redirigir según el rol del usuario
+                    if (auth()->user()->isAdmin()) {
+                        return redirect()->route('admin.panel');
+                    }
+                    return redirect()->route('dashboard');
+                }
+            };
+        });
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
