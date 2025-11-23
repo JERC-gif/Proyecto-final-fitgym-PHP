@@ -15,6 +15,23 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    @auth
+                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+                            <x-nav-link href="{{ route('admin.panel') }}" :active="request()->routeIs('admin.panel')">
+                                {{ auth()->user()->role === 'admin' ? 'Panel Admin' : 'Panel Staff' }}
+                            </x-nav-link>
+                            <x-nav-link href="{{ route('admin.membresias.index') }}" :active="request()->routeIs('admin.membresias.*')">
+                                Membresías
+                            </x-nav-link>
+                        @endif
+                        
+                        @if(auth()->user()->role === 'admin')
+                            <x-nav-link href="{{ route('admin.usuarios.index') }}" :active="request()->routeIs('admin.usuarios.*')">
+                                Usuarios
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 

@@ -42,5 +42,36 @@ class UserSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+
+        // CLIENTES ADICIONALES (2-3 usuarios extra según requisitos)
+        User::updateOrCreate(
+            ['email' => 'cliente1@gym.test'],
+            [
+                'name' => 'Cliente Uno',
+                'password' => Hash::make('password'),
+                'role' => 'client',
+                'is_active' => true,
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'cliente2@gym.test'],
+            [
+                'name' => 'Cliente Dos',
+                'password' => Hash::make('password'),
+                'role' => 'client',
+                'is_active' => true,
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'cliente3@gym.test'],
+            [
+                'name' => 'Cliente Tres',
+                'password' => Hash::make('password'),
+                'role' => 'client',
+                'is_active' => true,
+            ]
+        );
     }
 }

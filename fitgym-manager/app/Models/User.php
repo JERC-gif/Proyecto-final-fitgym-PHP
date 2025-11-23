@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -24,13 +25,20 @@ class User extends Authenticatable
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
+     * 
+     * Campos agregados:
+     * - role: Rol del usuario (admin, staff, client)
+     * - is_active: Estado activo/inactivo del usuario
+     * 
+     * Migración: database/migrations/xxxx_add_role_and_is_active_to_users_table.php
+     * Comando: php artisan make:migration add_role_and_is_active_to_users_table
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
-        'is_active',
+        'role',        // admin, staff, client
+        'is_active',   // true/false
     ];
 
     /**
@@ -68,7 +76,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Helpers de rol
+     * Métodos helper para verificar el rol del usuario
+     * 
+     * Uso:
+     * $user->isAdmin()  // true si es admin
+     * $user->isStaff()  // true si es staff
+     * $user->isClient() // true si es client
      */
     public function isAdmin(): bool
     {
@@ -83,5 +96,51 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    /**
+     * Relación: Un usuario puede tener múltiples membresías
+     * Tabla pivot: usuario_membresia
+     */
+    public function membresias()
+    {
+        return $this->belongsToMany(Membresia::class, 'usuario_membresia')
+                    ->withPivot('fecha_inicio', 'fecha_fin', 'activa', 'cancelada', 'fecha_cancelacion')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Obtiene la membresía activa del usuario
+     * 
+     * @return \App\Models\Membresia|null
+     */
+    public function membresiaActiva()
+    {
+        $membresiaPivot = DB::table('usuario_membresia')
+            ->where('user_id', $this->id)
+            ->where('activa', true)
+            ->where('cancelada', false)
+            ->whereDate('fecha_fin', '>=', now())
+            ->first();
+
+        if (!$membresiaPivot) {
+            return null;
+        }
+
+        // Obtener el modelo Membresia
+        $membresiaModel = \App\Models\Membresia::find($membresiaPivot->membresia_id);
+        
+        if ($membresiaModel) {
+            // Agregar datos del pivot como atributo dinámico
+            $membresiaModel->setAttribute('pivot_data', (object) [
+                'fecha_inicio' => $membresiaPivot->fecha_inicio,
+                'fecha_fin' => $membresiaPivot->fecha_fin,
+                'activa' => (bool) $membresiaPivot->activa,
+                'cancelada' => (bool) $membresiaPivot->cancelada,
+                'fecha_cancelacion' => $membresiaPivot->fecha_cancelacion,
+            ]);
+        }
+
+        return $membresiaModel;
     }
 }
