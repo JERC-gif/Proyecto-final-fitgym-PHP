@@ -45,8 +45,8 @@
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
                     </svg>
                 </div>
-                <input type="text" id="search" 
-                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                <input type="text" id="search"
+                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                        placeholder="Buscar membresías...">
             </div>
         </div>
@@ -106,14 +106,15 @@
                                 <div class="flex items-center justify-end gap-2">
                                     @if(auth()->user()->role === 'admin')
                                         <a href="{{ route('admin.membresias.edit', $membresia->id) }}"
-                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                           title="Editar">
+                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors btn-editar-membresia"
+                                           title="Editar"
+                                           data-membresia-name="{{ $membresia->nombre }}">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                             </svg>
                                         </a>
-                                        <form action="{{ route('admin.membresias.destroy', $membresia->id) }}" method="POST" class="inline"
-                                              onsubmit="return confirm('¿Estás seguro de eliminar esta membresía? Esta acción no se puede deshacer.');">
+                                        <form action="{{ route('admin.membresias.destroy', $membresia->id) }}" method="POST" class="inline form-eliminar-membresia"
+                                              data-membresia-name="{{ $membresia->nombre }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -124,6 +125,15 @@
                                                 </svg>
                                             </button>
                                         </form>
+                                    @elseif(auth()->user()->role === 'staff')
+                                        <a href="{{ route('admin.membresias.edit', $membresia->id) }}"
+                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors btn-editar-membresia"
+                                           title="Editar"
+                                           data-membresia-name="{{ $membresia->nombre }}">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                            </svg>
+                                        </a>
                                     @else
                                         <span class="text-xs text-gray-400">Solo lectura</span>
                                     @endif
@@ -152,11 +162,11 @@
             <div class="px-6 py-4 border-t border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="text-sm text-gray-700">
-                        Mostrando 
+                        Mostrando
                         <span class="font-medium">{{ $membresias->firstItem() }}</span>
-                        a 
+                        a
                         <span class="font-medium">{{ $membresias->lastItem() }}</span>
-                        de 
+                        de
                         <span class="font-medium">{{ $membresias->total() }}</span>
                         resultados
                     </div>
@@ -166,7 +176,7 @@
                         @else
                             <a href="{{ $membresias->previousPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Anterior</a>
                         @endif
-                        
+
                         @foreach($membresias->getUrlRange(1, $membresias->lastPage()) as $page => $url)
                             @if($page == $membresias->currentPage())
                                 <span class="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg">{{ $page }}</span>
@@ -186,4 +196,61 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmación para editar membresía (Admin y Staff)
+    document.querySelectorAll('.btn-editar-membresia').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            const membresiaName = this.getAttribute('data-membresia-name');
+            const editUrl = this.getAttribute('href');
+
+            // Solo mostrar confirmación, no prevenir el comportamiento por defecto
+            // Si el usuario cancela, prevenimos la navegación
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Editar membresía?',
+                text: `¿Estás seguro de que deseas editar la membresía "${membresiaName}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, editar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = editUrl;
+                }
+            });
+        });
+    });
+
+    // Confirmación para eliminar membresía (Solo Admin)
+    document.querySelectorAll('.form-eliminar-membresia').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const membresiaName = this.getAttribute('data-membresia-name');
+            const formElement = this;
+
+            Swal.fire({
+                title: '¿Eliminar membresía?',
+                text: `¿Estás seguro de eliminar la membresía "${membresiaName}"? Esta acción no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush
 

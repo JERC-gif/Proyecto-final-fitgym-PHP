@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-50 antialiased">
 
@@ -75,10 +78,10 @@
             <div class="h-full px-3 py-4 overflow-y-auto">
                 <ul class="space-y-2 font-medium">
                     <li>
-                        <a href="{{ route('admin.panel') }}" 
-                           class="flex items-center p-3 text-gray-900 rounded-lg 
+                        <a href="{{ route('admin.panel') }}"
+                           class="flex items-center p-3 text-gray-900 rounded-lg
                                   @if(request()->routeIs('admin.panel')) bg-indigo-100 text-indigo-700 @else hover:bg-gray-100 @endif group">
-                            <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 @if(request()->routeIs('admin.panel')) text-indigo-600 @endif" 
+                            <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 @if(request()->routeIs('admin.panel')) text-indigo-600 @endif"
                                  fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
@@ -102,13 +105,24 @@
                     <li>
                         <a href="{{ route('admin.membresias.index') }}"
                            class="flex items-center p-3 text-gray-900 rounded-lg
-                                  @if(request()->routeIs('admin.membresias.*')) bg-indigo-100 text-indigo-700 @else hover:bg-gray-100 @endif group">
-                            <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 @if(request()->routeIs('admin.membresias.*')) text-indigo-600 @endif"
+                                  @if(request()->routeIs('admin.membresias.*') && !request()->routeIs('admin.usuario-membresias.*')) bg-indigo-100 text-indigo-700 @else hover:bg-gray-100 @endif group">
+                            <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 @if(request()->routeIs('admin.membresias.*') && !request()->routeIs('admin.usuario-membresias.*')) text-indigo-600 @endif"
                                  fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
                                 <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
                             </svg>
                             <span class="ms-3">Membresías</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.usuario-membresias.index') }}"
+                           class="flex items-center p-3 text-gray-900 rounded-lg
+                                  @if(request()->routeIs('admin.usuario-membresias.*')) bg-indigo-100 text-indigo-700 @else hover:bg-gray-100 @endif group">
+                            <svg class="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 @if(request()->routeIs('admin.usuario-membresias.*')) text-indigo-600 @endif"
+                                 fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                            </svg>
+                            <span class="ms-3">Membresías de Usuarios</span>
                         </a>
                     </li>
                 </ul>
@@ -129,6 +143,9 @@
 
     </div>
 </div>
+
+{{-- Scripts adicionales --}}
+@stack('scripts')
 
 </body>
 </html>

@@ -142,6 +142,7 @@ Route::middleware([
      *
      * Rutas incluidas:
      * - GET /admin/membresias - Listar membresías (solo lectura para staff)
+     * - GET /admin/usuario-membresias - Listar usuarios con sus membresías (admin y staff)
      */
     Route::prefix('admin')
         ->middleware(['role:admin,staff'])
@@ -151,6 +152,10 @@ Route::middleware([
             // Staff solo puede ver la lista de membresías
             Route::get('/membresias', [\App\Http\Controllers\Admin\MembresiaController::class, 'index'])
                 ->name('membresias.index');
+
+            // Ver membresías de usuarios (admin y staff)
+            Route::get('/usuario-membresias', [\App\Http\Controllers\Admin\UsuarioMembresiaController::class, 'index'])
+                ->name('usuario-membresias.index');
 
         });
 

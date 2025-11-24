@@ -45,8 +45,9 @@ return new class extends Migration
             $table->timestamp('fecha_cancelacion')->nullable();
             $table->timestamps();
             
-            // Índice único para evitar membresías duplicadas activas
-            $table->unique(['user_id', 'membresia_id', 'activa'], 'unique_active_membership');
+            // Índice único para evitar membresías duplicadas (sin incluir activa)
+            // La validación de membresías activas se maneja en la aplicación
+            $table->unique(['user_id', 'membresia_id'], 'unique_user_membership');
         });
     }
 

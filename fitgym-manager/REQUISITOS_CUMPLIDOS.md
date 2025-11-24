@@ -234,7 +234,7 @@ php artisan serve
 ## 👤 Usuarios de Prueba
 
 - **Admin**: `admin@gym.test` / `password`
-- **Staff**: `staff@gym.test` / `password`
+- **Staff**: `staff@gym.test` / `dpasswor`
 - **Cliente 1**: `client@gym.test` / `password`
 - **Cliente 2**: `cliente1@gym.test` / `password`
 - **Cliente 3**: `cliente2@gym.test` / `password`

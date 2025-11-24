@@ -25,7 +25,7 @@
                     <div class="bg-white shadow-sm rounded-lg border border-gray-200">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Mi Membresía</h3>
-                            
+
                             @php
                                 $membresiaActiva = auth()->user()->membresiaActiva();
                             @endphp
@@ -41,7 +41,7 @@
                                                 </svg>
                                                 <h4 class="text-xl font-bold text-indigo-900">{{ $membresiaActiva->nombre }}</h4>
                                             </div>
-                                            
+
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                                 <div>
                                                     <p class="text-sm text-gray-600">Precio</p>
@@ -88,11 +88,12 @@
                                             @endif
 
                                             <div class="mt-6 pt-4 border-t border-indigo-200">
-                                                <form action="{{ route('profile.membresia.cancelar') }}" method="POST" 
-                                                      onsubmit="return confirm('¿Estás seguro de cancelar tu membresía? Esta acción no se puede deshacer.');">
+                                                <form action="{{ route('profile.membresia.cancelar') }}" method="POST"
+                                                      class="form-cancelar-membresia"
+                                                      data-membresia-name="{{ $membresiaActiva->nombre }}">
                                                     @csrf
                                                     @method('POST')
-                                                    <button type="submit" 
+                                                    <button type="submit"
                                                             class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -131,7 +132,7 @@
                                                         <p class="text-2xl font-bold text-indigo-600 mb-1">${{ number_format($membresia->precio, 2) }}</p>
                                                         <p class="text-sm text-gray-600">{{ $membresia->duracion_dias }} días</p>
                                                     </div>
-                                                    
+
                                                     @if($membresia->descripcion)
                                                         <p class="text-xs text-gray-500 mb-4 text-center">{{ $membresia->descripcion }}</p>
                                                     @endif
@@ -139,7 +140,7 @@
                                                     <form action="{{ route('profile.membresia.adquirir') }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="membresia_id" value="{{ $membresia->id }}">
-                                                        <button type="submit" 
+                                                        <button type="submit"
                                                                 class="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
                                                             Adquirir Membresía
                                                         </button>
@@ -199,3 +200,34 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmación para cancelar membresía (Cliente)
+    const formCancelar = document.querySelector('.form-cancelar-membresia');
+    if (formCancelar) {
+        formCancelar.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const membresiaName = this.getAttribute('data-membresia-name');
+            const formElement = this;
+
+            Swal.fire({
+                title: '¿Cancelar membresía?',
+                text: `¿Estás seguro de cancelar tu membresía "${membresiaName}"? Esta acción no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, cancelar',
+                cancelButtonText: 'No, mantener'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        });
+    }
+});
+</script>
+@endpush

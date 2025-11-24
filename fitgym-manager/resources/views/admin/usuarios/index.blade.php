@@ -43,16 +43,16 @@
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
                     </svg>
                 </div>
-                <input type="text" id="search" 
-                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                <input type="text" id="search"
+                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                        placeholder="Buscar usuarios...">
             </div>
         </div>
         <div class="flex items-center gap-3">
             {{-- Filtro de columnas --}}
             <div class="relative">
-                <button id="columnsButton" data-dropdown-toggle="columnsDropdown" 
-                        class="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                <button id="columnsButton" data-dropdown-toggle="columnsDropdown"
+                        class="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         type="button">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
@@ -146,25 +146,37 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.usuarios.edit', $user->id) }}"
-                                       class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                       title="Editar">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                        </svg>
-                                    </a>
-                                    <form action="{{ route('admin.usuarios.destroy', $user->id) }}" method="POST" class="inline"
-                                          onsubmit="return confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                title="Eliminar">
+                                    @if(auth()->user()->role === 'admin')
+                                        <a href="{{ route('admin.usuarios.edit', $user->id) }}"
+                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors btn-editar-usuario"
+                                           title="Editar"
+                                           data-user-name="{{ $user->name }}">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                             </svg>
-                                        </button>
-                                    </form>
+                                        </a>
+                                        <form action="{{ route('admin.usuarios.destroy', $user->id) }}" method="POST" class="inline form-eliminar-usuario"
+                                              data-user-name="{{ $user->name }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Eliminar">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @elseif(auth()->user()->role === 'staff')
+                                        <a href="{{ route('admin.usuarios.edit', $user->id) }}"
+                                           class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors btn-editar-usuario"
+                                           title="Editar"
+                                           data-user-name="{{ $user->name }}">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                            </svg>
+                                        </a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -189,11 +201,11 @@
             <div class="px-6 py-4 border-t border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="text-sm text-gray-700">
-                        Mostrando 
+                        Mostrando
                         <span class="font-medium">{{ $users->firstItem() }}</span>
-                        a 
+                        a
                         <span class="font-medium">{{ $users->lastItem() }}</span>
-                        de 
+                        de
                         <span class="font-medium">{{ $users->total() }}</span>
                         resultados
                     </div>
@@ -203,7 +215,7 @@
                         @else
                             <a href="{{ $users->previousPageUrl() }}" class="px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Anterior</a>
                         @endif
-                        
+
                         @foreach($users->getUrlRange(1, $users->lastPage()) as $page => $url)
                             @if($page == $users->currentPage())
                                 <span class="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg">{{ $page }}</span>
@@ -223,4 +235,61 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmación para editar usuario (Admin y Staff)
+    document.querySelectorAll('.btn-editar-usuario').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            const userName = this.getAttribute('data-user-name');
+            const editUrl = this.getAttribute('href');
+
+            // Solo mostrar confirmación, no prevenir el comportamiento por defecto
+            // Si el usuario cancela, prevenimos la navegación
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Editar usuario?',
+                text: `¿Estás seguro de que deseas editar el usuario "${userName}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, editar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = editUrl;
+                }
+            });
+        });
+    });
+
+    // Confirmación para eliminar usuario (Solo Admin)
+    document.querySelectorAll('.form-eliminar-usuario').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userName = this.getAttribute('data-user-name');
+            const formElement = this;
+
+            Swal.fire({
+                title: '¿Eliminar usuario?',
+                text: `¿Estás seguro de eliminar el usuario "${userName}"? Esta acción no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush
 

@@ -106,7 +106,7 @@
                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
                     Cancelar
                 </a>
-                <button type="submit"
+                <button type="submit" id="btn-actualizar-usuario"
                         class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     Actualizar Usuario
                 </button>
@@ -114,4 +114,34 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('btn-actualizar-usuario');
+    const userName = '{{ $user->name }}';
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formElement = this;
+        
+        Swal.fire({
+            title: '¿Guardar cambios?',
+            text: `¿Estás seguro de que deseas actualizar el usuario "${userName}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#4f46e5',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formElement.submit();
+            }
+        });
+    });
+});
+</script>
+@endpush
 

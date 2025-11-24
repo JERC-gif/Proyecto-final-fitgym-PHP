@@ -21,6 +21,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Membresia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MembresiaController extends Controller
 {
@@ -44,7 +45,7 @@ class MembresiaController extends Controller
     public function create()
     {
         // Verificación adicional: solo admin puede crear
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             abort(403, 'Solo los administradores pueden crear membresías.');
         }
 
@@ -73,7 +74,7 @@ class MembresiaController extends Controller
     public function store(Request $request)
     {
         // Verificación adicional: solo admin puede crear
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             abort(403, 'Solo los administradores pueden crear membresías.');
         }
         $validated = $request->validate([
@@ -111,7 +112,7 @@ class MembresiaController extends Controller
     public function edit(string $id)
     {
         // Verificación adicional: solo admin puede editar
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             abort(403, 'Solo los administradores pueden editar membresías.');
         }
 
@@ -127,7 +128,7 @@ class MembresiaController extends Controller
     public function update(Request $request, string $id)
     {
         // Verificación adicional: solo admin puede actualizar
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             abort(403, 'Solo los administradores pueden actualizar membresías.');
         }
 
@@ -165,7 +166,7 @@ class MembresiaController extends Controller
     public function destroy(string $id)
     {
         // Verificación adicional: solo admin puede eliminar
-        if (auth()->user()->role !== 'admin') {
+        if (Auth::user()->role !== 'admin') {
             abort(403, 'Solo los administradores pueden eliminar membresías.');
         }
 
