@@ -1,59 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FitGym Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción
 
-## About Laravel
+Sistema de gestión para gimnasios desarrollado con Laravel 12, Jetstream y Livewire. Permite la administración de usuarios, membresías y el control de acceso basado en roles (admin, staff, cliente).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Características principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Autenticación**: Sistema de autenticación con Jetstream (Livewire)
+- **Control de acceso por roles**: Admin, Staff y Cliente con permisos diferenciados
+- **Gestión de usuarios**: CRUD completo de usuarios (solo admin)
+- **Gestión de membresías**: CRUD de membresías con tipos predefinidos (Visita, Semana, Mes)
+- **Membresías de usuarios**: Visualización y gestión de membresías asignadas a usuarios
+- **Panel administrativo**: Dashboard con estadísticas y gestión centralizada
+- **Confirmaciones interactivas**: SweetAlert2 para acciones críticas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requisitos
 
-## Learning Laravel
+- PHP >= 8.2
+- Composer
+- Node.js y NPM
+- Base de datos (MySQL, PostgreSQL o SQLite)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Instalación
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clonar el repositorio
 
-## Laravel Sponsors
+```bash
+git clone <url-del-repositorio>
+cd fitgym-manager
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Instalar dependencias
 
-### Premium Partners
+```bash
+composer install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Configurar el archivo .env
 
-## Contributing
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Editar el archivo `.env` y configurar:
 
-## Code of Conduct
+```env
+APP_NAME="FitGym Manager"
+APP_URL=http://localhost:8000
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=fitgym_db
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
+```
 
-## Security Vulnerabilities
+### 4. Ejecutar migraciones y seeders
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan migrate --seed
+```
 
-## License
+Este comando creará:
+- Las tablas de la base de datos
+- Usuarios de prueba (admin, staff, clientes)
+- Membresías predefinidas (Visita, Semana, Mes)
+- Asignaciones de membresías a usuarios de prueba
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Compilar assets (opcional)
+
+```bash
+npm install
+npm run build
+```
+
+### 6. Iniciar el servidor
+
+```bash
+php artisan serve
+```
+
+El sistema estará disponible en: `http://localhost:8000`
+
+## Usuarios de prueba
+
+### Administrador
+- **Email**: `admin@gym.test`
+- **Contraseña**: `password`
+- **Permisos**: Acceso completo al sistema
+
+### Staff
+- **Email**: `staff@gym.test`
+- **Contraseña**: `password`
+- **Permisos**: Ver membresías de usuarios, editar membresías
+
+### Cliente
+- **Email**: `client@gym.test`
+- **Contraseña**: `password`
+- **Permisos**: Ver y gestionar su propia membresía
+
+### Clientes adicionales
+- `cliente1@gym.test` / `password`
+- `cliente2@gym.test` / `password`
+- `cliente3@gym.test` / `password`
+
+## Estructura del proyecto
+
+```
+fitgym-manager/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── Admin/          # Controladores del panel admin
+│   └── Models/                 # Modelos Eloquent
+├── database/
+│   ├── migrations/             # Migraciones de base de datos
+│   └── seeders/                # Seeders para datos de prueba
+├── resources/
+│   └── views/
+│       ├── admin/               # Vistas del panel administrativo
+│       └── layouts/            # Layouts principales
+└── routes/
+    └── web.php                 # Rutas de la aplicación
+```
+
+## Roles y permisos
+
+### Admin
+- Gestión completa de usuarios (crear, editar, eliminar)
+- Gestión completa de membresías (crear, editar, eliminar)
+- Ver membresías de todos los usuarios
+- Acceso al panel administrativo
+
+### Staff
+- Ver membresías de usuarios
+- Ver catálogo de membresías
+- Editar membresías (con confirmación)
+
+### Cliente
+- Ver su propia membresía
+- Adquirir nuevas membresías
+- Cancelar su membresía activa
+
+## Tecnologías utilizadas
+
+- **Laravel 12**: Framework PHP
+- **Jetstream**: Autenticación y scaffolding
+- **Livewire**: Componentes interactivos
+- **Tailwind CSS**: Framework CSS
+- **Flowbite**: Componentes UI para Tailwind
+- **SweetAlert2**: Alertas y confirmaciones
+
+## Comandos útiles
+
+```bash
+# Limpiar caché
+php artisan optimize:clear
+
+# Ejecutar solo seeders
+php artisan db:seed
+
+# Crear un nuevo usuario admin
+php artisan tinker
+>>> User::create(['name' => 'Admin', 'email' => 'admin@test.com', 'password' => Hash::make('password'), 'role' => 'admin', 'is_active' => true]);
+```
